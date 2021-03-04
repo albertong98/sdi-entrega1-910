@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head"/>
+<body>
+
+<!-- Barra de Navegación superior -->
+<nav th:replace="fragments/nav"/>
+
+<div class="container" th:fragment = "userDetails">
+  <h2 th:text="#{user.details.header}"></h2>
+  <div class="panel panel-default">
+	  <div class="panel-heading">Email</div>
+	  <div class="panel-body" th:text="${user.email}">28276</div>
+  </div>
+  <div class="panel panel-default">
+	  <div class="panel-heading" th:text="#{name.label}"></div>
+	  <div class="panel-body"  th:text="${user.name}">
+		
+	  </div>
+  </div>
+  <div class="panel panel-default">
+	  <div class="panel-heading" th:text="#{lastname.label}"></div>
+	  <div class="panel-body" th:text="${user.lastName}">
+		
+	  </div>
+  </div>
+</div>
+
+<footer th:replace="fragments/footer"/>
+</body>
+</html>
