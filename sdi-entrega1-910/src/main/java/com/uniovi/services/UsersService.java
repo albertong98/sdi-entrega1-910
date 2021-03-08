@@ -1,5 +1,8 @@
 package com.uniovi.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +25,12 @@ public class UsersService {
 	public void addUser(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		this.usersRepository.save(user);
+	}
+	
+	public List<User> getUsers(){
+		//TODO Paginacion?
+		List<User> users = new ArrayList<User>();
+		usersRepository.findAll().forEach(users::add);
+		return users;
 	}
 }

@@ -1,5 +1,8 @@
 package com.uniovi.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,5 +40,14 @@ public class UsersController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model) {
 		return "login";
+	}
+	@RequestMapping("/user/list")
+	public String getList(Model model,String searchText) {
+		List<User> users = new ArrayList<User>();
+
+		users = usersService.getUsers();
+		
+		model.addAttribute("usersList", users);
+		return "user/list";
 	}
 }
