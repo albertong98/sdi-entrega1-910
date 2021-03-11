@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.uniovi.entities.User;
 import com.uniovi.services.SecurityService;
@@ -30,7 +31,7 @@ public class UsersController {
 	public String signup(@ModelAttribute User user) {
 		user.setSaldo(100);
 		usersService.addUser(user);
-		securityService.autoLogin(user.getEmail(),user.getPasswordConfirm());
+		//securityService.autoLogin(user.getEmail(),user.getPasswordConfirm());
 		return "redirect:home";
 	}
 	@RequestMapping(value = { "/home" }, method = RequestMethod.GET)
@@ -49,5 +50,13 @@ public class UsersController {
 		
 		model.addAttribute("usersList", users);
 		return "user/list";
+	}
+	@RequestMapping(value="/user/delete", method=RequestMethod.POST)
+	public String deleteUser(Model model,@RequestParam("idUser") List<String> idUsers) {
+		if(idUsers != null)
+			for(String id : idUsers)
+				usersService.deleteUser(this.usersService.getUser(Long.parseLong(id)));
+		
+		return "redirect:user/list";
 	}
 }

@@ -33,4 +33,12 @@ public class UsersService {
 		usersRepository.findAll().forEach(users::add);
 		return users;
 	}
+	
+	public void deleteUser(User user) {
+		this.usersRepository.delete(user);
+	}
+	
+	public User getUser(Long id) {
+		return this.usersRepository.findById(id).get();
+	}
 }

@@ -25,6 +25,8 @@ public class User {
 	
 	private double saldo;
 	
+	private String role;
+	
 	public User(String email, String name, String lastName) {
 		super();
 		this.email = email;
@@ -88,6 +90,14 @@ public class User {
 
 	public void setSaldo(double saldo) {
 		this.saldo = saldo;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	
