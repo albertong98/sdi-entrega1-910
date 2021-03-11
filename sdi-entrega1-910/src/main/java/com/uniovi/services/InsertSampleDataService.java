@@ -39,6 +39,6 @@ public class InsertSampleDataService {
 		usersService.addUser(user3);
 		usersService.addUser(user4);
 		usersService.addUser(user5);
-
+		usersService.addUser(admin);
 	}
 }
