@@ -19,4 +19,8 @@ public class OffersService {
 	public Page<Offer> getOffersBySeller(Pageable pageable,User user){
 		return this.offersRepository.findAllBySeller(pageable, user);
 	}
+	
+	public void deleteOffer(Long id) {
+		this.offersRepository.deleteById(id);
+	} 
 }
