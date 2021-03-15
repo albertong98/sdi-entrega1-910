@@ -29,9 +29,15 @@ public class Offer {
 	private Date date;
 	
 	public Offer() {
-		date = new Date(System.currentTimeMillis());
-		comprada = false;
+		this.setComprada(false);
+		this.setDate(new Date(System.currentTimeMillis()));
 	}
+	
+	public Offer(User user) {
+		super();
+		this.setSeller(user);
+	}
+	
 	public Long getId() {
 		return id;
 	}
