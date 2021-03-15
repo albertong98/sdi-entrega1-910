@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.uniovi.entities.Offer;
 import com.uniovi.entities.User;
@@ -57,8 +58,27 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value = "/offer/delete/{id}")
-	private String deleteOffer(@PathVariable Long id) {
-		this.offersService.deleteOffer(id);
+	private String deleteOffer(@PathVariable Long id,Principal principal) {
+		User seller = this.usersService.getUserByEmail(principal.getName());
+		Offer offer = this.offersService.getOffer(id);
+		
+		if(seller.equals(offer.getSeller()))
+			this.offersService.deleteOffer(id);
+
 		return "redirect:offer/list";
+	}
+	
+	@RequestMapping(value="/offer/search")
+	private String searchOffers(Model model,Pageable pageable,@RequestParam(value="",required=false) String searchText) {
+		Page<Offer> offerSearch = new PageImpl<Offer>(new LinkedList<Offer>());
+		
+		if(searchText!=null && !searchText.isEmpty())
+			offerSearch = offersService.searchOffersByTitle(pageable,searchText);
+		else
+			offerSearch = offersService.getOffers(pageable);
+		
+		model.addAttribute("offerList",offerSearch);
+		model.addAttribute("page",offerSearch);
+		return "offer/search";
 	}
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head" />
+
+<body>
+    <!-- Barra de Navegación superior -->
+    <nav th:replace="fragments/nav" />
+
+    <div class="container">
+        <h2>Ofertas</h2>
+        <p>Estas son las ofertas que se ajustan a sus criterios de busqueda:
+        </p>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Descripción </th>
+                        <th>Precio </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                 	<tr th:each="offer : ${offersList}">
+                        <td th:text="${offer.title}">Título de la oferta</td>
+                        <td th:text="${offer.description}">Descripción de la oferta</td>
+                        <td th:text="${offer.price}">Precio de la oferta</td>
+                        <td><a th:href="${'/offer/buy/' + offer.id}">comprar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <footer th:replace="fragments/pagination"/>
+    </div>
+    <footer th:replace="fragments/footer" />
+</body>
+
+</html>

@@ -20,7 +20,19 @@ public class OffersService {
 		return this.offersRepository.findAllBySeller(pageable, user);
 	}
 	
+	public Offer getOffer(Long id) {
+		return this.offersRepository.findById(id).get();
+	}
+	
 	public void deleteOffer(Long id) {
 		this.offersRepository.deleteById(id);
 	} 
+	
+	public Page<Offer> searchOffersByTitle(Pageable pageable,String searchText){
+		return this.offersRepository.searchByTitle(pageable, searchText);
+	}
+	
+	public Page<Offer> getOffers(Pageable pageable){
+		return this.offersRepository.findAll(pageable);
+	}
 }
