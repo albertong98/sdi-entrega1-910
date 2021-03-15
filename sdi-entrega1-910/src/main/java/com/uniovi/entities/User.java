@@ -1,9 +1,13 @@
 package com.uniovi.entities;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -26,6 +30,11 @@ public class User {
 	private double saldo;
 	
 	private String role;
+	
+	@OneToMany(mappedBy = "seller",cascade= CascadeType.ALL)
+	private Set<Offer> ofertas;
+	@OneToMany(mappedBy = "buyer",cascade= CascadeType.ALL)
+	private Set<Offer> compras;
 	
 	public User(String email, String name, String lastName) {
 		super();
@@ -100,5 +109,19 @@ public class User {
 		this.role = role;
 	}
 
-	
+	public Set<Offer> getOfertas() {
+		return ofertas;
+	}
+
+	public void setOfertas(Set<Offer> ofertas) {
+		this.ofertas = ofertas;
+	}
+
+	public Set<Offer> getCompras() {
+		return compras;
+	}
+
+	public void setCompras(Set<Offer> compras) {
+		this.compras = compras;
+	}
 }

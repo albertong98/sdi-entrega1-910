@@ -81,4 +81,21 @@ public class OffersController {
 		model.addAttribute("page",offerSearch);
 		return "offer/search";
 	}
+	
+	@RequestMapping(value="/offer/buy/{id}")
+	private String buyOffer(@PathVariable Long id,Principal principal) {
+		Offer offer = offersService.getOffer(id);
+		User buyer = usersService.getUserByEmail(principal.getName());
+
+		if(offer.getPrecio() <= buyer.getSaldo()) {
+			offer.setBuyer(buyer);
+			offer.setComprada(true);
+			
+			buyer.setSaldo(buyer.getSaldo() - offer.getPrecio());
+	
+			offersService.addOffer(offer);
+		}
+		
+		return "redirect:offer/list";
+	}
 }
