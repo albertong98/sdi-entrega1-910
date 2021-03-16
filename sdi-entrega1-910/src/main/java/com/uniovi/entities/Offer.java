@@ -38,6 +38,14 @@ public class Offer {
 		this.setSeller(user);
 	}
 	
+	public Offer(User user,String titulo,String descripcion, double precio) {
+		super();
+		this.setSeller(user);
+		this.setTitulo(titulo);
+		this.setDescripcion(descripcion);
+		this.setPrecio(precio);
+	}
+	
 	public Long getId() {
 		return id;
 	}

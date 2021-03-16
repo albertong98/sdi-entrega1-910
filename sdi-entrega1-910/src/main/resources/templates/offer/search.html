@@ -5,7 +5,7 @@
 <body>
     <!-- Barra de Navegación superior -->
     <nav th:replace="fragments/nav" />
-
+	<nav th:replace="fragments/searchBar" />
     <div class="container">
         <h2>Ofertas</h2>
         <p>Estas son las ofertas que se ajustan a sus criterios de busqueda:
@@ -18,18 +18,17 @@
                         <th>Descripción </th>
                         <th>Precio </th>
                         <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
                     </tr>
                 </thead>
                 <tbody>
-                 	<tr th:each="offer : ${offersList}">
-                        <td th:text="${offer.title}">Título de la oferta</td>
-                        <td th:text="${offer.description}">Descripción de la oferta</td>
-                        <td th:text="${offer.price}">Precio de la oferta</td>
-                        <td><a th:href="${'/offer/buy/' + offer.id}">comprar</a></td>
+                 	<tr th:each="offer : ${offerList}">
+                        <td th:text="${offer.titulo}">Título de la oferta</td>
+                        <td th:text="${offer.descripcion}">Descripción de la oferta</td>
+                        <td th:text="${offer.precio}">Precio de la oferta</td>
+                        <td>
+                        	<a th:if="${offer.comprada}">vendido</a>
+                        	<a th:unless="${offer.comprada}" th:href="${'/offer/buy/' + offer.id}">comprar</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>

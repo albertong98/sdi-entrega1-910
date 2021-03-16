@@ -51,7 +51,7 @@ public class OffersController {
 		
 		offers = offersService.getOffersBySeller(pageable,usersService.getUser(id));
 		
-		model.addAttribute("offersList",offers);
+		model.addAttribute("offersList",offers.getContent());
 		model.addAttribute("page",offers);
 		
 		return "offer/list";
@@ -65,19 +65,21 @@ public class OffersController {
 		if(seller.equals(offer.getSeller()))
 			this.offersService.deleteOffer(id);
 
-		return "redirect:offer/list";
+		return "redirect:/offer/list";
 	}
 	
 	@RequestMapping(value="/offer/search")
 	private String searchOffers(Model model,Pageable pageable,@RequestParam(value="",required=false) String searchText) {
 		Page<Offer> offerSearch = new PageImpl<Offer>(new LinkedList<Offer>());
 		
+		searchText = "%"+searchText+"%";
+		
 		if(searchText!=null && !searchText.isEmpty())
 			offerSearch = offersService.searchOffersByTitle(pageable,searchText);
 		else
 			offerSearch = offersService.getOffers(pageable);
 		
-		model.addAttribute("offerList",offerSearch);
+		model.addAttribute("offerList",offerSearch.getContent());
 		model.addAttribute("page",offerSearch);
 		return "offer/search";
 	}
@@ -96,6 +98,21 @@ public class OffersController {
 			offersService.addOffer(offer);
 		}
 		
-		return "redirect:offer/list";
+		return "redirect:/offer/orders";
+	}
+	
+	@RequestMapping(value = "/offer/orders")
+	private String getOrders(Model model,Pageable pageable,Principal principal) {
+		Page<Offer> offers = new PageImpl<Offer>(new LinkedList<Offer>());
+		
+		String email = principal.getName();
+		Long id = usersService.getUserByEmail(email).getId();
+		
+		offers = offersService.getOffersByBuyer(pageable,usersService.getUser(id));
+		
+		model.addAttribute("offerList",offers.getContent());
+		model.addAttribute("page",offers);
+		
+		return "offer/orders";
 	}
 }

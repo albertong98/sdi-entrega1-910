@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="fragments/head" />
@@ -8,7 +10,7 @@
 	<nav th:replace="fragments/searchBar" />
     <div class="container">
         <h2>Ofertas</h2>
-        <p>Estas son sus ofertas que figuran en el sistema:
+        <p>Estos son sus pedidos:
         </p> 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -17,15 +19,15 @@
                         <th>Título</th>
                         <th>Descripción </th>
                         <th>Precio </th>
-                        <th class="col-md-1"></th>
+                        <th class="col-md-1">Email</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="offer : ${offersList}">
+                    <tr th:each="offer : ${offerList}">
                         <td th:text="${offer.titulo}">Título de la oferta</td>
                         <td th:text="${offer.descripcion}">Descripción de la oferta</td>
                         <td th:text="${offer.precio}">Precio de la oferta</td>
-                        <td><a th:href="${'/offer/delete/' + offer.id}">eliminar</a></td>
+                        <td th:text="${offer.seller.email}">email</td>
                     </tr>
                 </tbody>
             </table>
