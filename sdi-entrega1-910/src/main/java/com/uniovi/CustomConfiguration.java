@@ -25,10 +25,15 @@ public class CustomConfiguration implements WebMvcConfigurer {
 		localeChangeInterceptor.setParamName("lang");
 		return localeChangeInterceptor;
 	}
-
+	
+	@Bean
+	CustomInterceptor customInterceptor() {
+	     return new CustomInterceptor();
+	}
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
+		registry.addInterceptor(customInterceptor()).excludePathPatterns("/index","/signup","/login","/logout");
 	}
 
 }

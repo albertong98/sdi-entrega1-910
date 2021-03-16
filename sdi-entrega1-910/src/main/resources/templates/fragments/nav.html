@@ -30,6 +30,7 @@
 					</ul>
 				</li>
 			</ul>
+			<ul><form sec:authorize="isAuthenticated()" th:replace="fragments/searchBar" /></ul>
 			<ul class="nav navbar-nav navbar-right">
 				
 				<li sec:authorize="!isAuthenticated()"><a href="/signup" th:text="#{signup.message}">

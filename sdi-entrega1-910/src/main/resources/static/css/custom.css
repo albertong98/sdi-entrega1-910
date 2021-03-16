@@ -22,3 +22,12 @@ footer {
 }
 
 /* Sticky footer styles-------------------------------------------------- */
+
+.user { 
+	float:right;
+	display: inline-block;
+    margin-left: 20px;
+    margin-right: 20px;
+    color: #FFF;
+    font-weight: bold
+}
