@@ -40,11 +40,11 @@ public class OffersService {
 		this.offersRepository.deleteById(id);
 	} 
 	
-	public Page<Offer> searchOffersByTitle(Pageable pageable,String searchText){
-		return this.offersRepository.searchByTitle(pageable, searchText);
+	public Page<Offer> searchOffersByTitle(Pageable pageable,String searchText,User user){
+		return this.offersRepository.searchByTitle(pageable, searchText,user);
 	}
 	
-	public Page<Offer> getOffers(Pageable pageable){
-		return this.offersRepository.findAll(pageable);
+	public Page<Offer> getOffers(Pageable pageable,User user){
+		return this.offersRepository.findAll(pageable,user);
 	}
 }

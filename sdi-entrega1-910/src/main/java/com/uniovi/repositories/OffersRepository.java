@@ -12,10 +12,11 @@ public interface OffersRepository extends CrudRepository<Offer, Long> {
 	@Query("SELECT o FROM Offer o WHERE o.seller = ?1 ORDER BY o.id ASC")
 	public Page<Offer> findAllBySeller(Pageable pageable,User seller);
 	
-	@Query("SELECT o FROM Offer o WHERE LOWER(o.titulo) LIKE LOWER(?1)")
-	Page<Offer> searchByTitle(Pageable pageable,String searchText);
+	@Query("SELECT o FROM Offer o WHERE LOWER(o.titulo) LIKE LOWER(?1) AND o.seller <> ?2")
+	Page<Offer> searchByTitle(Pageable pageable,String searchText,User user);
 	
-	Page<Offer> findAll(Pageable pageable);
+	@Query("SELECT o FROM Offer o WHERE o.seller <> ?1")
+	Page<Offer> findAll(Pageable pageable,User user);
 	
 	@Query("SELECT o FROM Offer o WHERE o.buyer = ?1 ORDER BY o.id ASC")
 	public Page<Offer> findAllByBuyer(Pageable pageable,User buyer);
