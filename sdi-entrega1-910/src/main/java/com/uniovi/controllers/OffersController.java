@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import com.uniovi.entities.Offer;
 import com.uniovi.entities.User;
 import com.uniovi.services.OffersService;
 import com.uniovi.services.UsersService;
+import com.uniovi.validators.OfferAddValidator;
 
 @Controller
 public class OffersController {
@@ -26,6 +28,8 @@ public class OffersController {
 	private UsersService usersService;
 	@Autowired
 	private OffersService offersService;
+	@Autowired
+	private OfferAddValidator offerAddValidator;
 	
 	@RequestMapping("/offer/add")
 	public String getOffer(Model model) {
@@ -34,7 +38,9 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value = "/offer/add",method = RequestMethod.POST)
-	public String setOffer(@ModelAttribute Offer offer,Principal principal) {
+	public String setOffer(@ModelAttribute Offer offer,Principal principal,BindingResult result) {
+		offerAddValidator.validate(offer,result);
+		if(result.hasErrors()) return "/offer/add";
 		String email = principal.getName();
 		User user = usersService.getUserByEmail(email);
 		offer.setSeller(user);

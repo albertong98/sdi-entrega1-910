@@ -30,6 +30,7 @@ public class CustomConfiguration implements WebMvcConfigurer {
 	CustomInterceptor customInterceptor() {
 	     return new CustomInterceptor();
 	}
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());

@@ -20,13 +20,13 @@ public class OfferAddValidator implements Validator {
 		Offer offer = (Offer) target;
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titulo", "Error.empty");
 		if (offer.getTitulo().length() < 3) {
-			errors.rejectValue("titulo", "");
+			errors.rejectValue("titulo", "Error.offer.title");
 		}
 		if (offer.getDescripcion().length() < 5) {
-			errors.rejectValue("descripcion", "");
+			errors.rejectValue("descripcion", "Error.offer.description");
 		}
 		if (offer.getPrecio() < 1) {
-			errors.rejectValue("precio", "");
+			errors.rejectValue("precio", "Error.offer.precio");
 		}
 	}
 

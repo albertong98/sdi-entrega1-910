@@ -20,12 +20,11 @@ public class CustomInterceptor implements HandlerInterceptor{
     public void postHandle(final HttpServletRequest request,final HttpServletResponse response, final Object handler,final ModelAndView modelAndView) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-			String email = auth.getName();
+		String email = auth.getName();
 			
-	        if (modelAndView != null && !email.equals("anonymousUser")) {
-	        	User user = usersService.getUserByEmail(email);
-	            modelAndView.getModelMap().addAttribute("loggedUser",user);
-	       
+	    if (modelAndView != null && !email.equals("anonymousUser")) {
+	        User user = usersService.getUserByEmail(email);
+	        modelAndView.getModelMap().addAttribute("loggedUser",user);
 		}
     }
 }
