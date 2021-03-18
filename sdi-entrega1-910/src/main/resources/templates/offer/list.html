@@ -8,6 +8,7 @@
 
     <div class="container">
         <h2 th:text="#{offer.list.header}">Ofertas</h2>
+        <p><span class="text-danger" th:text="${errorMessage}"/></p>
         <p th:text="#{offer.list.description}">Estas son sus ofertas que figuran en el sistema:
         </p> 
         <div class="table-responsive">

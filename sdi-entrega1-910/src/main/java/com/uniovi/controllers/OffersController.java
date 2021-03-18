@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.uniovi.entities.Offer;
 import com.uniovi.entities.User;
 import com.uniovi.services.OffersService;
+import com.uniovi.services.RolesService;
 import com.uniovi.services.UsersService;
 import com.uniovi.validators.OfferAddValidator;
 
@@ -31,6 +33,8 @@ public class OffersController {
 	private UsersService usersService;
 	@Autowired
 	private OffersService offersService;
+	@Autowired
+	private RolesService rolesService;
 	@Autowired
 	private OfferAddValidator offerAddValidator;
 	
@@ -44,7 +48,7 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value = "/offer/add",method = RequestMethod.POST)
-	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result) {
+	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result,RedirectAttributes redir) {
 		offerAddValidator.validate(offer,result);
 		
 		if(result.hasErrors()) { 
@@ -53,12 +57,21 @@ public class OffersController {
 		}
 		
 		String email = principal.getName();
-		
-		logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
-		
 		User user = usersService.getUserByEmail(email);
-		offer.setSeller(user);
-		offersService.addOffer(offer);
+		
+		String errorMessage = "";
+		
+		if(user.getRole().equals(rolesService.getRoles()[0])) {
+			offer.setSeller(user);
+			offersService.addOffer(offer);
+			logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
+		}else {
+			errorMessage = "El administrador no puede subir ofertas";
+			logger.error("Admin tried to upload offer");
+		}
+		
+		redir.addFlashAttribute("errorMessage",errorMessage);
+		
 		return "redirect:/list";
 	}
 	
@@ -81,17 +94,18 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value = "/offer/delete/{id}")
-	private String deleteOffer(@PathVariable Long id,Principal principal) {
+	private String deleteOffer(@PathVariable Long id,Principal principal,RedirectAttributes redir) {
 		User seller = this.usersService.getUserByEmail(principal.getName());
 		Offer offer = this.offersService.getOffer(id);
-		
+		String errorMessage = "";
 		if(seller.equals(offer.getSeller())){
 			logger.info("User "+seller.getEmail()+" deleted his offer "+offer.getTitulo());
 			this.offersService.deleteOffer(id);
 		}else {
+			errorMessage = "No se puede borrar una oferta de otro usuario";
 			logger.error("User "+seller.getEmail()+" tried to delete an offer from other user");
 		}
-		
+		redir.addFlashAttribute("errorMessage",errorMessage);
 		return "redirect:/offer/list";
 	}
 	
@@ -115,10 +129,10 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value="/offer/buy/{id}")
-	private String buyOffer(@PathVariable Long id,Principal principal) {
+	private String buyOffer(@PathVariable Long id,Principal principal,RedirectAttributes redir) {
 		Offer offer = offersService.getOffer(id);
 		User buyer = usersService.getUserByEmail(principal.getName());
-
+		String errorMessage ="";
 		if(offer.getPrecio() <= buyer.getSaldo()) {
 			offer.setBuyer(buyer);
 			offer.setComprada(true);
@@ -129,8 +143,12 @@ public class OffersController {
 			
 			logger.info("User "+buyer.getEmail()+" bought offer "+offer.getTitulo());
 		}else {
+			errorMessage = "No dispone de suficiente saldo";
 			logger.error("User "+buyer.getEmail()+" tried to buy "+offer.getTitulo()+" but does not have enough money");
 		}
+		
+		redir.addFlashAttribute("errorMessage",errorMessage);
+		redir.addFlashAttribute("offer_id",offer.getId());
 		
 		return "redirect:/offer/orders";
 	}

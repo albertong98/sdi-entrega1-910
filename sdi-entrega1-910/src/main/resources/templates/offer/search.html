@@ -28,6 +28,7 @@
                         <td>
                         	<a th:if="${offer.comprada}" th:text="#{offer.sold}">vendido</a>
                         	<a th:unless="${offer.comprada}" th:href="${'/offer/buy/' + offer.id}" th:text="#{offer.buy}">comprar</a>
+                        	<p><span class="text-danger" th:if="${offer.id == offer_id}" th:text="${errorMessage}"/></p>
                         </td>
                     </tr>
                 </tbody>
