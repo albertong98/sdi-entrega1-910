@@ -7,16 +7,16 @@
     <nav th:replace="fragments/nav" />
 
     <div class="container">
-        <h2>Ofertas</h2>
-        <p>Estas son las ofertas que se ajustan a sus criterios de busqueda:
+        <h2 th:text="#{offer.list.header}">Ofertas</h2>
+        <p th:text="#{offer.search}">Estas son las ofertas que se ajustan a sus criterios de busqueda:
         </p>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Título</th>
-                        <th>Descripción </th>
-                        <th>Precio </th>
+                        <th th:text="#{offer.title}">Título</th>
+                        <th th:text="#{offer.description}">Descripción </th>
+                        <th th:text="#{offer.price}">Precio </th>
                         <th class="col-md-1"></th>
                     </tr>
                 </thead>
@@ -26,8 +26,8 @@
                         <td th:text="${offer.descripcion}">Descripción de la oferta</td>
                         <td th:text="${offer.precio}">Precio de la oferta</td>
                         <td>
-                        	<a th:if="${offer.comprada}">vendido</a>
-                        	<a th:unless="${offer.comprada}" th:href="${'/offer/buy/' + offer.id}">comprar</a>
+                        	<a th:if="${offer.comprada}" th:text="#{offer.sold}">vendido</a>
+                        	<a th:unless="${offer.comprada}" th:href="${'/offer/buy/' + offer.id}" th:text="#{offer.buy}">comprar</a>
                         </td>
                     </tr>
                 </tbody>

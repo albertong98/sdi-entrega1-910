@@ -7,16 +7,16 @@
     <nav th:replace="fragments/nav" />
 
     <div class="container">
-        <h2>Ofertas</h2>
-        <p>Estas son sus ofertas que figuran en el sistema:
+        <h2 th:text="#{offer.list.header}">Ofertas</h2>
+        <p th:text="#{offer.list.description}">Estas son sus ofertas que figuran en el sistema:
         </p> 
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Título</th>
-                        <th>Descripción </th>
-                        <th>Precio </th>
+                        <th th:text="#{offer.title}">Título</th>
+                        <th th:text="#{table.description}">Descripción </th>
+                        <th th:text="#{offer.price}">Precio </th>
                         <th class="col-md-1"></th>
                     </tr>
                 </thead>
@@ -25,7 +25,7 @@
                         <td th:text="${offer.titulo}">Título de la oferta</td>
                         <td th:text="${offer.descripcion}">Descripción de la oferta</td>
                         <td th:text="${offer.precio}">Precio de la oferta</td>
-                        <td><a th:href="${'/offer/delete/' + offer.id}">eliminar</a></td>
+                        <td><a th:href="${'/offer/delete/' + offer.id}" th:text="#{offer.list.table.delete}">eliminar</a></td>
                     </tr>
                 </tbody>
             </table>
