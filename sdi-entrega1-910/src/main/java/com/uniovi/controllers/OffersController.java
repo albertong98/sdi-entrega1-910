@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value = "/offer/add",method = RequestMethod.POST)
-	public String setOffer(@ModelAttribute Offer offer,Principal principal,BindingResult result) {
+	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result) {
 		offerAddValidator.validate(offer,result);
 		if(result.hasErrors()) return "/offer/add";
 		String email = principal.getName();
