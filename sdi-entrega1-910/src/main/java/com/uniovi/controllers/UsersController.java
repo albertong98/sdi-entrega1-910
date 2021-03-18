@@ -3,6 +3,8 @@ package com.uniovi.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +35,11 @@ public class UsersController {
 	@Autowired
 	private RolesService rolesService;
 	
+	Logger logger = LoggerFactory.getLogger(UsersController.class);
+	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
+		logger.info("User signing up");
 		model.addAttribute("user", new User());
 		return "signup";
 	}
@@ -42,7 +47,13 @@ public class UsersController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String signup(@ModelAttribute @Validated User user,BindingResult result) {
 		signUpFormValidator.validate(user,result);
-		if(result.hasErrors()) return "singup";
+		
+		if(result.hasErrors()) { 
+			logger.error("User signup failed as"+user.getEmail());
+			return "singup";
+		}
+		
+		logger.info("User signed up succesfully as "+user.getEmail());
 		
 		user.setRole(rolesService.getRoles()[0]);
 		user.setSaldo(100);
@@ -56,19 +67,25 @@ public class UsersController {
 	public String home(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = auth.getName();
+		
+		logger.info("User "+email+" accesing private page");
+		
 		model.addAttribute("user", usersService.getUserByEmail(email));
 		return "home";
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model) {
+		logger.info("User loging in");
 		return "login";
 	}
 	
 	@RequestMapping("/user/list")
 	public String getList(Model model,String searchText) {
+		logger.info("User admin accesing users list");
+		
 		List<User> users = new ArrayList<User>();
-
+		
 		users = usersService.getUsers();
 		
 		model.addAttribute("usersList", users);
@@ -79,12 +96,16 @@ public class UsersController {
 	public String getDetail(Model model, @PathVariable Long id) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = auth.getName();
+		
+		logger.info("User "+ email+" accesing user profile");
+		
 		model.addAttribute("user", usersService.getUserByEmail(email));
 		return "user/profile";
 	}
 	
 	@RequestMapping(value="/user/delete", method=RequestMethod.POST)
 	public String deleteUser(Model model,@RequestParam("idUser") List<String> idUsers) {
+		logger.info("User admin deleting users");
 		if(idUsers != null)
 			for(String id : idUsers)
 				usersService.deleteUser(this.usersService.getUser(Long.parseLong(id)));

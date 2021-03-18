@@ -3,6 +3,8 @@ package com.uniovi.controllers;
 import java.security.Principal;
 import java.util.LinkedList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,8 +34,11 @@ public class OffersController {
 	@Autowired
 	private OfferAddValidator offerAddValidator;
 	
+	Logger logger = LoggerFactory.getLogger(OffersController.class);
+	
 	@RequestMapping("/offer/add")
 	public String getOffer(Model model) {
+		logger.info("User uploading offer");
 		model.addAttribute("offer",new Offer());
 		return "offer/add";
 	}
@@ -41,8 +46,16 @@ public class OffersController {
 	@RequestMapping(value = "/offer/add",method = RequestMethod.POST)
 	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result) {
 		offerAddValidator.validate(offer,result);
-		if(result.hasErrors()) return "/offer/add";
+		
+		if(result.hasErrors()) { 
+			logger.error("Offer upload failed");
+			return "/offer/add";
+		}
+		
 		String email = principal.getName();
+		
+		logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
+		
 		User user = usersService.getUserByEmail(email);
 		offer.setSeller(user);
 		offersService.addOffer(offer);
@@ -54,6 +67,9 @@ public class OffersController {
 		Page<Offer> offers = new PageImpl<Offer>(new LinkedList<Offer>());
 		
 		String email = principal.getName();
+		
+		logger.info("User "+email+" accesing his offers list");
+		
 		Long id = usersService.getUserByEmail(email).getId();
 		
 		offers = offersService.getOffersBySeller(pageable,usersService.getUser(id));
@@ -69,9 +85,13 @@ public class OffersController {
 		User seller = this.usersService.getUserByEmail(principal.getName());
 		Offer offer = this.offersService.getOffer(id);
 		
-		if(seller.equals(offer.getSeller()))
+		if(seller.equals(offer.getSeller())){
+			logger.info("User "+seller.getEmail()+" deleted his offer "+offer.getTitulo());
 			this.offersService.deleteOffer(id);
-
+		}else {
+			logger.error("User "+seller.getEmail()+" tried to delete an offer from other user");
+		}
+		
 		return "redirect:/offer/list";
 	}
 	
@@ -86,6 +106,8 @@ public class OffersController {
 		}
 		else
 			offerSearch = offersService.getOffers(pageable,user);
+		
+		logger.info("User searching for "+searchText);
 		
 		model.addAttribute("offerList",offerSearch.getContent());
 		model.addAttribute("page",offerSearch);
@@ -104,6 +126,10 @@ public class OffersController {
 			buyer.setSaldo(buyer.getSaldo() - offer.getPrecio());
 	
 			offersService.addOffer(offer);
+			
+			logger.info("User "+buyer.getEmail()+" bought offer "+offer.getTitulo());
+		}else {
+			logger.error("User "+buyer.getEmail()+" tried to buy "+offer.getTitulo()+" but does not have enough money");
 		}
 		
 		return "redirect:/offer/orders";
@@ -120,6 +146,8 @@ public class OffersController {
 		
 		model.addAttribute("offerList",offers.getContent());
 		model.addAttribute("page",offers);
+		
+		logger.info("User "+email+" accesing his orders list");
 		
 		return "offer/orders";
 	}
