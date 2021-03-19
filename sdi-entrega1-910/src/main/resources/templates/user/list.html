@@ -24,7 +24,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="user : ${usersList}">
+					<tr th:each="user : ${usersList}" th:if="${user.email} != 'admin@email.com'">
 						<td th:text="${user.email}">email@email.com</td>
 						<td th:text="${user.name}">Nombre</td>
 						<td th:text="${user.lastName}">Apellidos</td>

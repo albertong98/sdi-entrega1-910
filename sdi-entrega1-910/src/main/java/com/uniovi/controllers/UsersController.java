@@ -105,9 +105,11 @@ public class UsersController {
 	@RequestMapping(value="/user/delete", method=RequestMethod.POST)
 	public String deleteUser(Model model,@RequestParam("idUser") List<String> idUsers) {
 		logger.info("User admin deleting users");
+		User admin = usersService.getUserByEmail("admin@email.com");
 		if(idUsers != null)
 			for(String id : idUsers)
-				usersService.deleteUser(this.usersService.getUser(Long.parseLong(id)));
+				if(Long.parseLong(id) != admin.getId())
+					usersService.deleteUser(this.usersService.getUser(Long.parseLong(id)));
 
 		model.addAttribute("usersList", usersService.getUsers());
 		return "redirect:list";

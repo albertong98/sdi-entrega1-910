@@ -28,7 +28,6 @@ public class UsersService {
 	}
 	
 	public List<User> getUsers(){
-		//TODO Paginacion?
 		List<User> users = new ArrayList<User>();
 		usersRepository.findAll().forEach(users::add);
 		return users;
