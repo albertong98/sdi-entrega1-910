@@ -3,6 +3,8 @@ package com.uniovi.services;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ import com.uniovi.repositories.OffersRepository;
 public class OffersService {
 	@Autowired
 	private OffersRepository offersRepository;
-	
+
 	@PostConstruct
 	public void init() {
 	}
@@ -45,6 +47,19 @@ public class OffersService {
 	}
 	
 	public Page<Offer> getOffers(Pageable pageable,User user){
-		return this.offersRepository.findAll(pageable,user);
+		return this.offersRepository.findAllForUser(pageable,user);
+	}
+	
+	public String buyOffer(Offer offer,User buyer,MessageSource messageSource) {	
+		if(offer.isComprada())
+			return messageSource.getMessage("Error.user.sold",null,null,LocaleContextHolder.getLocale());
+		if(offer.getPrecio() >= offer.getBuyer().getSaldo())
+			return messageSource.getMessage("Error.user.balance",null,null,LocaleContextHolder.getLocale());
+		
+		offer.setBuyer(buyer);
+		offer.setComprada(true);
+		buyer.setSaldo(buyer.getSaldo() - offer.getPrecio());
+		
+		return "";
 	}
 }

@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.uniovi.entities.Offer;
 import com.uniovi.entities.User;
 import com.uniovi.services.OffersService;
-import com.uniovi.services.RolesService;
 import com.uniovi.services.UsersService;
 import com.uniovi.validators.OfferAddValidator;
 
@@ -34,9 +35,9 @@ public class OffersController {
 	@Autowired
 	private OffersService offersService;
 	@Autowired
-	private RolesService rolesService;
-	@Autowired
 	private OfferAddValidator offerAddValidator;
+	@Autowired
+	private MessageSource messageSource;
 	
 	Logger logger = LoggerFactory.getLogger(OffersController.class);
 	
@@ -47,32 +48,21 @@ public class OffersController {
 		return "offer/add";
 	}
 	
-	@RequestMapping(value = "/offer/add",method = RequestMethod.POST)
-	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result,RedirectAttributes redir) {
-		offerAddValidator.validate(offer,result);
-		
-		if(result.hasErrors()) { 
-			logger.error("Offer upload failed");
-			return "/offer/add";
-		}
-		
+	@RequestMapping(value ="/offer/add",method = RequestMethod.POST)
+	public String setOffer(@ModelAttribute @Validated Offer offer,Principal principal,BindingResult result) {
 		String email = principal.getName();
 		User user = usersService.getUserByEmail(email);
+		offer.setSeller(user);
 		
-		String errorMessage = "";
+		offerAddValidator.validate(offer,result);
 		
-		if(user.getRole().equals(rolesService.getRoles()[0])) {
-			offer.setSeller(user);
-			offersService.addOffer(offer);
-			logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
-		}else {
-			errorMessage = "El administrador no puede subir ofertas";
-			logger.error("Admin tried to upload offer");
-		}
+		if(result.hasErrors()) 
+			return "/offer/add";
+	
+		offersService.addOffer(offer);
+		logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
 		
-		redir.addFlashAttribute("errorMessage",errorMessage);
-		
-		return "redirect:/list";
+		return "redirect:list";
 	}
 	
 	@RequestMapping(value = "/offer/list")
@@ -97,16 +87,19 @@ public class OffersController {
 	private String deleteOffer(@PathVariable Long id,Principal principal,RedirectAttributes redir) {
 		User seller = this.usersService.getUserByEmail(principal.getName());
 		Offer offer = this.offersService.getOffer(id);
+		
 		String errorMessage = "";
+		
 		if(seller.equals(offer.getSeller())){
 			logger.info("User "+seller.getEmail()+" deleted his offer "+offer.getTitulo());
 			this.offersService.deleteOffer(id);
 		}else {
-			errorMessage = "No se puede borrar una oferta de otro usuario";
+			errorMessage = messageSource.getMessage("Error.user.delete.other",null,null,LocaleContextHolder.getLocale());
 			logger.error("User "+seller.getEmail()+" tried to delete an offer from other user");
 		}
+		
 		redir.addFlashAttribute("errorMessage",errorMessage);
-		return "redirect:/offer/list";
+		return "redirect:offer/list";
 	}
 	
 	@RequestMapping(value="/offer/search")
@@ -132,25 +125,21 @@ public class OffersController {
 	private String buyOffer(@PathVariable Long id,Principal principal,RedirectAttributes redir) {
 		Offer offer = offersService.getOffer(id);
 		User buyer = usersService.getUserByEmail(principal.getName());
-		String errorMessage ="";
-		if(offer.getPrecio() <= buyer.getSaldo()) {
-			offer.setBuyer(buyer);
-			offer.setComprada(true);
-			
-			buyer.setSaldo(buyer.getSaldo() - offer.getPrecio());
-	
-			offersService.addOffer(offer);
-			
-			logger.info("User "+buyer.getEmail()+" bought offer "+offer.getTitulo());
-		}else {
-			errorMessage = "No dispone de suficiente saldo";
-			logger.error("User "+buyer.getEmail()+" tried to buy "+offer.getTitulo()+" but does not have enough money");
-		}
+		
+		String errorMessage = offersService.buyOffer(offer,buyer,messageSource);
 		
 		redir.addFlashAttribute("errorMessage",errorMessage);
 		redir.addFlashAttribute("offer_id",offer.getId());
 		
-		return "redirect:/offer/orders";
+		if(!errorMessage.isEmpty()) {
+			logger.error("User "+offer.getBuyer().getEmail()+" tried to buy "+offer.getTitulo()+" but an error happended: "+errorMessage);
+			return "redirect:offer/list";
+		}
+		
+		offersService.addOffer(offer);
+		usersService.addUser(buyer);
+		
+		return "redirect:offer/orders";
 	}
 	
 	@RequestMapping(value = "/offer/orders")

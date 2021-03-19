@@ -6,9 +6,9 @@
 	<nav th:replace="fragments/nav" />
 	<div class="container">
 		<h2 th:text="#{offer.add.header}">Dar de alta una oferta</h2>
-		<p><span class="text-danger" th:text="${errorMessage}"/></p>
 		<form class="form-horizontal" method="post" action="/offer/add"
 			th:object="${offer}">
+			<p><span class="text-danger" th:if="${#fields.hasErrors('seller')}" th:errors="*{seller}"/></p>
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="titulo" th:text="#{offer.title} + ':'">Titulo:</label>
 				<div class="col-sm-10">
