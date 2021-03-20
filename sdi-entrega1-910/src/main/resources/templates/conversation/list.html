@@ -14,6 +14,7 @@
 						<th>email</th>
 						<th th:text="#{conversation.offer.title}">Titulo oferta</th>
 						<th class="col-md-1"></th>
+						<th class="col-md-1"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -22,6 +23,7 @@
 						<td th:if="${conversation.user.email} == principal.username" th:text="${conversation.offer.seller.email}">email</td>
 						<td th:unless="${conversation.user.email} == principal.username" th:text="${conversation.user.email}">email</td>
 						<td><a th:href="${'/conversation/' + conversation.id}" th:text="#{conversation.enter}">entrar</a></td>
+						<td><a th:href="${'/conversation/delete/' + conversation.id}" th:text="#{offer.list.table.delete}">eliminar</a></td>
 					</tr>
 				</tbody>
 			</table>

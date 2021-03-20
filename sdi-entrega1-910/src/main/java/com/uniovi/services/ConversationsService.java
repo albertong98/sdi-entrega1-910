@@ -38,4 +38,8 @@ public class ConversationsService {
 	public Conversation findConversationForUserAndOffer(User user,Offer offer) {
 		return this.conversationsRepository.findConversationForUserAndOffer(user, offer);
 	}
+	
+	public void deleteConversation(Long id) {
+		this.conversationsRepository.deleteById(id);
+	}
 }

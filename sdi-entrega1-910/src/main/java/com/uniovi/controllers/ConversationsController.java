@@ -87,4 +87,18 @@ public class ConversationsController {
 		
 		return "redirect:/conversation/"+c.getId();
 	}
+	
+	@RequestMapping("/conversation/delete/{id}")
+	private String deleteConversation(@PathVariable Long id,Principal principal) {
+		User user = this.usersService.getUserByEmail(principal.getName());
+		Conversation c = this.conversationService.getConversation(id);
+		
+		if(!(c.getUser().equals(user) || c.getOffer().getSeller().equals(user)))
+			return "redirect:/conversation/list";
+		
+		this.conversationService.deleteConversation(id);
+		
+		return "redirect:/conversation/list";
+	}
+	
 }
