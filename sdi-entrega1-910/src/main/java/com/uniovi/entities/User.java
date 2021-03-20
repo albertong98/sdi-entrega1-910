@@ -35,6 +35,8 @@ public class User {
 	private Set<Offer> ofertas;
 	@OneToMany(mappedBy = "buyer",cascade= CascadeType.ALL)
 	private Set<Offer> compras;
+	@OneToMany(mappedBy = "user",cascade= CascadeType.ALL)
+	private Set<Conversation> conversaciones;
 	
 	public User(String email, String name, String lastName) {
 		super();

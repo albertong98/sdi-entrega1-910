@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head" />
+<body>
+	<!-- Barra de Navegación superior -->
+	<nav th:replace="fragments/nav" />
+	<div class="container">
+		<h2 th:text="#{conversation.header}">Conversaciones</h2>
+		<p th:text="#{conversation.list.description}">Estas son sus conversaciones</p>
+		<div class="table-responsive">
+			<table class="table table-hover" th:fragment="tableConversation" id="tableConversation">
+				<thead>
+					<tr>
+						<th>email</th>
+						<th th:text="#{conversation.offer.title}">Titulo oferta</th>
+						<th class="col-md-1"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="conversation : ${conversationList}">
+						<td th:text="${conversation.offer.titulo}">titulo</td>
+						<td th:if="${conversation.user.email} == principal.username" th:text="${conversation.offer.seller.email}">email</td>
+						<td th:unless="${conversation.user.email} == principal.username" th:text="${conversation.user.email}">email</td>
+						<td><a th:href="${'/conversation/' + conversation.id}" th:text="#{conversation.enter}">entrar</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<footer th:replace="fragments/footer" />
+</body>
+</html>
