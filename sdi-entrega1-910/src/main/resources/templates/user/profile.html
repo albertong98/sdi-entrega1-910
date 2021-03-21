@@ -8,6 +8,7 @@
 
 <div class="container" th:fragment = "userDetails">
   <h2 th:text="#{user.profile}"></h2>
+  <p th:text="#{user.profile.details}">Estos son los detalles del usuario</p>
   <div class="panel panel-default">
 	  <div class="panel-heading">Email</div>
 	  <div class="panel-body" th:text="${user.email}">28276</div>

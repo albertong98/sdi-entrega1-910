@@ -47,4 +47,10 @@ public class PO_NavView extends PO_View {
 		By boton = By.className("btn");
 		driver.findElement(boton).click();
 	}
+	
+	public static void clickMenuOption(WebDriver driver,String menu,String option,String criterio,String text) {
+		WebElement dropdown = driver.findElement(By.id(menu));
+		dropdown.findElement(By.className("dropdown-toggle")).click();
+		PO_NavView.clickOption(driver,option,criterio,text);
+	}
 }

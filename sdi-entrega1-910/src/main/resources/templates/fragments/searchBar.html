@@ -5,8 +5,9 @@
 		</div>
 		<button type="submit" class="btn btn-default" th:text="#{button.search}">Buscar</button>
 		
-		<span class="user" th:text="#{user.balance} + ${loggedUser.saldo}"></span>
-		<span class="user" sec:authentication="principal.username"></span>
+		
 		<input type="hidden" name="${_csrf.parameterName}"
 				value="${_csrf.token}" />
 </form>
+<span class="user" sec:authorize="isAuthenticated()" th:text="#{user.balance} + ${loggedUser.saldo}"></span>
+<span class="user" sec:authentication="principal.username"></span>

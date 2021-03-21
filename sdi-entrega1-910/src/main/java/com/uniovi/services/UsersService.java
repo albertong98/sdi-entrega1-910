@@ -44,4 +44,8 @@ public class UsersService {
 	public User getUserByEmail(String email) {
 		return this.usersRepository.findByEmail(email);
 	}
+	
+	public void deleteAll() {
+		this.usersRepository.deleteAll();
+	}
 }

@@ -1,6 +1,7 @@
 package com.uniovi.controllers;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.LinkedList;
 
 import org.slf4j.Logger;
@@ -53,11 +54,13 @@ public class OffersController {
 		String email = principal.getName();
 		User user = usersService.getUserByEmail(email);
 		offer.setSeller(user);
+		offer.setComprada(false);
+		offer.setDate(new Date(System.currentTimeMillis()));
 		
 		offerAddValidator.validate(offer,result);
 		
 		if(result.hasErrors()) 
-			return "/offer/add";
+			return "offer/add";
 	
 		offersService.addOffer(offer);
 		logger.info("Offer "+offer.getTitulo()+" uploaded succesfully by "+email);
@@ -99,7 +102,7 @@ public class OffersController {
 		}
 		
 		redir.addFlashAttribute("errorMessage",errorMessage);
-		return "redirect:offer/list";
+		return "redirect:/offer/list";
 	}
 	
 	@RequestMapping(value="/offer/search")
@@ -132,14 +135,14 @@ public class OffersController {
 		redir.addFlashAttribute("offer_id",offer.getId());
 		
 		if(!errorMessage.isEmpty()) {
-			logger.error("User "+offer.getBuyer().getEmail()+" tried to buy "+offer.getTitulo()+" but an error happended: "+errorMessage);
-			return "redirect:offer/list";
+			logger.error("User "+buyer.getEmail()+" tried to buy "+offer.getTitulo()+" but an error happended: "+errorMessage);
+			return "redirect:/offer/search";
 		}
 		
 		offersService.addOffer(offer);
 		usersService.addUser(buyer);
 		
-		return "redirect:offer/orders";
+		return "redirect:/offer/orders";
 	}
 	
 	@RequestMapping(value = "/offer/orders")

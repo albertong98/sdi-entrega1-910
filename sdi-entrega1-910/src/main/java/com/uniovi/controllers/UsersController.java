@@ -49,7 +49,7 @@ public class UsersController {
 		
 		if(result.hasErrors()) { 
 			logger.error("User signup failed as"+user.getEmail());
-			return "singup";
+			return "signup";
 		}
 		
 		logger.info("User signed up succesfully as "+user.getEmail());

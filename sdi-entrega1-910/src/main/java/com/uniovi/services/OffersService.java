@@ -53,7 +53,7 @@ public class OffersService {
 	public String buyOffer(Offer offer,User buyer,MessageSource messageSource) {	
 		if(offer.isComprada())
 			return messageSource.getMessage("Error.user.sold",null,null,LocaleContextHolder.getLocale());
-		if(offer.getPrecio() >= offer.getBuyer().getSaldo())
+		if(offer.getPrecio() > buyer.getSaldo())
 			return messageSource.getMessage("Error.user.balance",null,null,LocaleContextHolder.getLocale());
 		
 		offer.setBuyer(buyer);

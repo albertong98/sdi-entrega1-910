@@ -51,4 +51,22 @@ public class PO_View {
 		List<WebElement> elementos = SeleniumUtils.EsperaCargaPagina(driver, type, text, getTimeout());
 		return elementos;		
 	}
+	
+	public static void checkMessage(WebDriver driver,String message,int language) {
+		//Esperamos a que se cargue el saludo de bienvenida en Español
+		SeleniumUtils.EsperaCargaPagina(driver, "text", p.getString(message,language), getTimeout());
+	}
+	
+	public static void checkChangeIdiom(WebDriver driver,String message, String textIdiom1, String textIdiom2, int locale1, int locale2 ) {
+		//Esperamos a que se cargue el saludo de bienvenida en Español
+		PO_UserPrivateView.checkMessage(driver,message,locale1);
+		//Cambiamos a segundo idioma
+		PO_UserPrivateView.changeIdiom(driver, textIdiom2);
+		//COmprobamos que el texto de bienvenida haya cambiado a segundo idioma
+		PO_UserPrivateView.checkMessage(driver,message, locale2);
+		//Volvemos a Español.
+		PO_UserPrivateView.changeIdiom(driver, textIdiom1);
+		//Esperamos a que se cargue el saludo de bienvenida en Español
+		PO_UserPrivateView.checkMessage(driver,message,locale1);
+	}
 }

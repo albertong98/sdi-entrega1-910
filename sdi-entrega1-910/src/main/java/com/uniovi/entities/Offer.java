@@ -29,8 +29,7 @@ public class Offer {
 	private Date date;
 	
 	public Offer() {
-		this.setComprada(false);
-		this.setDate(new Date(System.currentTimeMillis()));
+		
 	}
 	
 	public Offer(User user) {

@@ -29,11 +29,14 @@ public class PO_UserListView extends PO_NavView{
 	
 	
 	public static void deleteUsers(int users,WebDriver driver) {
-		List<WebElement> elementos = driver.findElements(By.xpath("//input[@type='checkbox'"));
-		
+		List<WebElement> elementos = driver.findElements(By.xpath("//input[contains(@type,'checkbox')]"));
 		for(int i=0;i<users;i++) 
 			elementos.get(i).click();
 		
 		driver.findElement(By.name("delete")).click();
+	}
+	
+	public static void checkUserListIdiom(WebDriver driver, String textIdiom1, String textIdiom2, int locale1, int locale2) {
+		PO_View.checkChangeIdiom(driver, "user.list.description", textIdiom1, textIdiom2, locale1, locale2);
 	}
 }
